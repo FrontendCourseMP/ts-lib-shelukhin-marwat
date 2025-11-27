@@ -30,3 +30,4 @@ export interface SimpleValidatorConstructor {
     new (form: HTMLFormElement): SimpleValidatorInstance 
 }
 
+export declare const SimpleValidator: SimpleValidatorConstructor
