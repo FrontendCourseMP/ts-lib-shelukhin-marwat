@@ -2,4 +2,4 @@
 shelukhin-marwat
 
 shemi52-Шелухин Михаил
-Morwat Mohmand - Мохманд Морват
+Morwat Mohmand - Мохманд Марват
