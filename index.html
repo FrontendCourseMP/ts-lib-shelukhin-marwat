@@ -3,18 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ts-val</title>
+    <title>SimpleValidator</title>
   </head>
   <body>
     <main>
       <section>
-        <form novalidate>
-          <label>Имя <input type="text" required></label>
-          <p role="alert" aria-live="assertive"></p>
-          <button type="submit">Отправить</button>
+        <form id="test-form" novalidate>
+          <div>
+            <label>Имя пользователя *</label><br>
+            <input type="text" name="username">
+            <p data-error-for="username"></p>
+          </div>
+
+          <div>
+            <label>Email</label><br>
+            <input type="email" name="email">
+            <p data-error-for="email"></p>
+          </div>
+
+          <div>
+            <label>Пароль *</label><br>
+            <input type="password" name="password">
+            <p data-error-for="password"></p>
+          </div>
+
+          <div>
+            <button type="button" id="validate-btn">
+              Проверить форму
+            </button>
+            <button type="button" id="reset-btn">
+              Сбросить
+            </button>
+          </div>
         </form>
       </section>
     </main>
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/test-demo.ts"></script>
   </body>
 </html>
