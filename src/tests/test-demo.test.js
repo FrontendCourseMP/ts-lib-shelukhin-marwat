@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import SimpleValidator from '../main.ts'
+import SimpleValidator from '../main.js'
 
 // Mock the DOM structure exactly like in test-demo.ts
 describe('test-demo.ts Integration', () => {
-  let form: HTMLFormElement
-  let validateBtn: HTMLButtonElement
-  let resetBtn: HTMLButtonElement
+  let form
+  let validateBtn
+  let resetBtn
 
   beforeEach(() => {
     // Setup exact DOM structure from test-demo.ts
@@ -22,9 +22,9 @@ describe('test-demo.ts Integration', () => {
       </form>
     `
     
-    form = document.getElementById('test-form') as HTMLFormElement
-    validateBtn = document.getElementById('validate-btn') as HTMLButtonElement
-    resetBtn = document.getElementById('reset-btn') as HTMLButtonElement
+    form = document.getElementById('test-form')
+    validateBtn = document.getElementById('validate-btn')
+    resetBtn = document.getElementById('reset-btn')
   })
 
   describe('Demo initialization', () => {
@@ -73,8 +73,8 @@ describe('test-demo.ts Integration', () => {
       validator.addField('password', { required: true, minLength: 6 })
       
       // Set invalid data
-      const usernameInput = form.elements.namedItem('username') as HTMLInputElement
-      const passwordInput = form.elements.namedItem('password') as HTMLInputElement
+      const usernameInput = form.elements.namedItem('username')
+      const passwordInput = form.elements.namedItem('password')
       
       usernameInput.value = 'ab' // Too short
       passwordInput.value = '123' // Too short
@@ -109,9 +109,9 @@ describe('test-demo.ts Integration', () => {
       validator.addField('password', { required: true, minLength: 6 })
       
       // Set valid data
-      const usernameInput = form.elements.namedItem('username') as HTMLInputElement
-      const emailInput = form.elements.namedItem('email') as HTMLInputElement
-      const passwordInput = form.elements.namedItem('password') as HTMLInputElement
+      const usernameInput = form.elements.namedItem('username')
+      const emailInput = form.elements.namedItem('email')
+      const passwordInput = form.elements.namedItem('password')
       
       usernameInput.value = 'JohnDoe'
       emailInput.value = 'john@example.com'
@@ -135,8 +135,8 @@ describe('test-demo.ts Integration', () => {
 
   describe('Reset button click', () => {
     it('should reset form when reset button is clicked', () => {
-      const usernameInput = form.elements.namedItem('username') as HTMLInputElement
-      const emailInput = form.elements.namedItem('email') as HTMLInputElement
+      const usernameInput = form.elements.namedItem('username')
+      const emailInput = form.elements.namedItem('email')
       
       // Set values
       usernameInput.value = 'Test User'
@@ -164,7 +164,7 @@ describe('test-demo.ts Integration', () => {
       
       validator.addField('username', { required: true })
       
-      const usernameInput = form.elements.namedItem('username') as HTMLInputElement
+      const usernameInput = form.elements.namedItem('username')
       
       // First validation (error)
       usernameInput.value = ''
@@ -224,7 +224,7 @@ describe('test-demo.ts Integration', () => {
       validator.addField('username', { required: true })
       // Don't setup email and password
       
-      const usernameInput = form.elements.namedItem('username') as HTMLInputElement
+      const usernameInput = form.elements.namedItem('username')
       usernameInput.value = 'John'
       
       validateBtn.addEventListener('click', () => {

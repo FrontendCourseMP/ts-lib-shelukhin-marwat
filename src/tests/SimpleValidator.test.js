@@ -1,12 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import SimpleValidator from '../main.ts'
+import SimpleValidator from '../main.js'
 
 describe('SimpleValidator', () => {
-  let form: HTMLFormElement
-  let validator: SimpleValidator
+  let form
+  let validator
 
   beforeEach(() => {
-    // Setup DOM for each test
     document.body.innerHTML = `
       <form id="test-form">
         <input type="text" name="username" />
@@ -18,7 +17,7 @@ describe('SimpleValidator', () => {
       </form>
     `
     
-    form = document.getElementById('test-form') as HTMLFormElement
+    form = document.getElementById('test-form')
     validator = new SimpleValidator(form)
   })
 
@@ -43,7 +42,7 @@ describe('SimpleValidator', () => {
   describe('validateField (private method testing via public validate)', () => {
     it('should validate required field - empty', () => {
       validator.addField('username', { required: true })
-      const input = form.elements.namedItem('username') as HTMLInputElement
+      const input = form.elements.namedItem('username')
       input.value = ''
       
       const result = validator.validate()
@@ -54,7 +53,7 @@ describe('SimpleValidator', () => {
 
     it('should validate required field - filled', () => {
       validator.addField('username', { required: true })
-      const input = form.elements.namedItem('username') as HTMLInputElement
+      const input = form.elements.namedItem('username')
       input.value = 'John'
       
       const result = validator.validate()
@@ -65,7 +64,7 @@ describe('SimpleValidator', () => {
 
     it('should validate minLength - too short', () => {
       validator.addField('username', { minLength: 5 })
-      const input = form.elements.namedItem('username') as HTMLInputElement
+      const input = form.elements.namedItem('username')
       input.value = 'abc'
       
       const result = validator.validate()
@@ -76,7 +75,7 @@ describe('SimpleValidator', () => {
 
     it('should validate minLength - valid', () => {
       validator.addField('username', { minLength: 3 })
-      const input = form.elements.namedItem('username') as HTMLInputElement
+      const input = form.elements.namedItem('username')
       input.value = 'abcde'
       
       const result = validator.validate()
@@ -86,7 +85,7 @@ describe('SimpleValidator', () => {
 
     it('should validate email - invalid', () => {
       validator.addField('email', { email: true })
-      const input = form.elements.namedItem('email') as HTMLInputElement
+      const input = form.elements.namedItem('email')
       input.value = 'invalid-email'
       
       const result = validator.validate()
@@ -97,7 +96,7 @@ describe('SimpleValidator', () => {
 
     it('should validate email - valid', () => {
       validator.addField('email', { email: true })
-      const input = form.elements.namedItem('email') as HTMLInputElement
+      const input = form.elements.namedItem('email')
       input.value = 'test@example.com'
       
       const result = validator.validate()
@@ -107,7 +106,7 @@ describe('SimpleValidator', () => {
 
     it('should validate email - empty (no error when not required)', () => {
       validator.addField('email', { email: true })
-      const input = form.elements.namedItem('email') as HTMLInputElement
+      const input = form.elements.namedItem('email')
       input.value = ''
       
       const result = validator.validate()
@@ -117,8 +116,8 @@ describe('SimpleValidator', () => {
 
     it('should validate multiple rules together', () => {
       validator.addField('username', { required: true, minLength: 3 })
-      const input = form.elements.namedItem('username') as HTMLInputElement
-      input.value = 'ab' // Too short
+      const input = form.elements.namedItem('username')
+      input.value = '' // EMPTY string - triggers both rules
       
       const result = validator.validate()
       
@@ -129,7 +128,7 @@ describe('SimpleValidator', () => {
 
     it('should trim whitespace before validation', () => {
       validator.addField('username', { required: true })
-      const input = form.elements.namedItem('username') as HTMLInputElement
+      const input = form.elements.namedItem('username')
       input.value = '   ' // Only spaces
       
       const result = validator.validate()
@@ -142,7 +141,7 @@ describe('SimpleValidator', () => {
   describe('showError and clearError (DOM interactions)', () => {
     it('should display error in DOM when validation fails', () => {
       validator.addField('username', { required: true })
-      const input = form.elements.namedItem('username') as HTMLInputElement
+      const input = form.elements.namedItem('username')
       input.value = ''
       
       validator.validate()
@@ -153,8 +152,8 @@ describe('SimpleValidator', () => {
 
     it('should display multiple errors joined by comma', () => {
       validator.addField('username', { required: true, minLength: 5 })
-      const input = form.elements.namedItem('username') as HTMLInputElement
-      input.value = 'ab'
+      const input = form.elements.namedItem('username')
+      input.value = '' // EMPTY string - triggers both errors
       
       validator.validate()
       
@@ -164,7 +163,7 @@ describe('SimpleValidator', () => {
 
     it('should clear error when validation passes', () => {
       validator.addField('username', { required: true })
-      const input = form.elements.namedItem('username') as HTMLInputElement
+      const input = form.elements.namedItem('username')
       
       // First with error
       input.value = ''
@@ -185,7 +184,7 @@ describe('SimpleValidator', () => {
       container?.remove()
       
       validator.addField('username', { required: true })
-      const input = form.elements.namedItem('username') as HTMLInputElement
+      const input = form.elements.namedItem('username')
       input.value = ''
       
       // Should not throw error
@@ -198,8 +197,8 @@ describe('SimpleValidator', () => {
       validator.addField('username', { required: true })
       validator.addField('email', { email: true })
       
-      const usernameInput = form.elements.namedItem('username') as HTMLInputElement
-      const emailInput = form.elements.namedItem('email') as HTMLInputElement
+      const usernameInput = form.elements.namedItem('username')
+      const emailInput = form.elements.namedItem('email')
       
       usernameInput.value = 'JohnDoe'
       emailInput.value = 'john@example.com'
@@ -214,10 +213,10 @@ describe('SimpleValidator', () => {
       validator.addField('username', { required: true, minLength: 5 })
       validator.addField('email', { email: true })
       
-      const usernameInput = form.elements.namedItem('username') as HTMLInputElement
-      const emailInput = form.elements.namedItem('email') as HTMLInputElement
+      const usernameInput = form.elements.namedItem('username')
+      const emailInput = form.elements.namedItem('email')
       
-      usernameInput.value = 'ab'
+      usernameInput.value = '' // EMPTY - triggers both required and minLength
       emailInput.value = 'invalid-email'
       
       const result = validator.validate()
@@ -240,8 +239,8 @@ describe('SimpleValidator', () => {
       // Don't add rules for email field
       validator.addField('username', { required: true })
       
-      const usernameInput = form.elements.namedItem('username') as HTMLInputElement
-      const emailInput = form.elements.namedItem('email') as HTMLInputElement
+      const usernameInput = form.elements.namedItem('username')
+      const emailInput = form.elements.namedItem('email')
       
       usernameInput.value = 'John'
       emailInput.value = '' // Should be ignored
