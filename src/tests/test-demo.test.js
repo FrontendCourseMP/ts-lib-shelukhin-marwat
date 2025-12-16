@@ -1,14 +1,21 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import SimpleValidator from '../main.js'
 
-// Mock the DOM structure exactly like in test-demo.ts
+/**
+ * Интеграционные тесты для демо-приложения test-demo.ts
+ * Проверяет полный рабочий цикл валидации как в реальном использовании
+ * @test {test-demo.ts integration}
+ */
 describe('test-demo.ts Integration', () => {
-  let form
-  let validateBtn
-  let resetBtn
+  let form;
+  let validateBtn;
+  let resetBtn;
 
+  /**
+   * Настройка DOM структуры как в демо-приложении
+   * Создает идентичную HTML структуру для тестирования
+   */
   beforeEach(() => {
-    // Setup exact DOM structure from test-demo.ts
     document.body.innerHTML = `
       <form id="test-form">
         <input type="text" name="username" />
@@ -20,14 +27,22 @@ describe('test-demo.ts Integration', () => {
         <button id="validate-btn">Validate</button>
         <button id="reset-btn">Reset</button>
       </form>
-    `
+    `;
     
-    form = document.getElementById('test-form')
-    validateBtn = document.getElementById('validate-btn')
-    resetBtn = document.getElementById('reset-btn')
-  })
-
+    form = document.getElementById('test-form');
+    validateBtn = document.getElementById('validate-btn');
+    resetBtn = document.getElementById('reset-btn');
+  });
+  /**
+   * Тестирование инициализации демо-приложения
+   * Проверяет корректность настройки всех элементов
+   */
   describe('Demo initialization', () => {
+
+    /**
+     * Проверяет наличие всех необходимых DOM элементов
+     * @test
+     */
     it('should find all required DOM elements', () => {
       expect(form).toBeTruthy()
       expect(validateBtn).toBeTruthy()
@@ -35,91 +50,99 @@ describe('test-demo.ts Integration', () => {
       expect(form.elements.namedItem('username')).toBeTruthy()
       expect(form.elements.namedItem('email')).toBeTruthy()
       expect(form.elements.namedItem('password')).toBeTruthy()
-    })
+    });
 
+    /**
+     * Проверяет инициализацию валидатора и добавление полей
+     * Воспроизводит логику из test-demo.ts
+     * @test
+     */
     it('should initialize validator and add fields correctly', () => {
-      // This tests the logic from test-demo.ts
-      const validator = new SimpleValidator(form)
+      const validator = new SimpleValidator(form);
       
       validator.addField('username', {
         required: true,
         minLength: 3
-      })
+      });
       
       validator.addField('email', {
         email: true
-      })
+      });
       
       validator.addField('password', {
         required: true,
         minLength: 6
-      })
+      });
       
       expect(validator.fields.size).toBe(3)
-      expect(validator.fields.get('username')).toEqual({ required: true, minLength: 3 })
-      expect(validator.fields.get('email')).toEqual({ email: true })
-      expect(validator.fields.get('password')).toEqual({ required: true, minLength: 6 })
-    })
-  })
+      expect(validator.fields.get('username')).toEqual({ required: true, minLength: 3 });
+      expect(validator.fields.get('email')).toEqual({ email: true });
+      expect(validator.fields.get('password')).toEqual({ required: true, minLength: 6 });
+    });
+  });
 
+  /**
+   * Тестирование работы кнопки валидации
+   * Проверяет обработку клика и логирование результата
+   */
   describe('Validate button click', () => {
+
+    /**
+     * Проверяет валидацию формы и логирование при клике
+     * Воспроизводит сценарий с невалидными данными
+     * @test
+     */
     it('should validate form and log result when validate button is clicked', () => {
-      const validator = new SimpleValidator(form)
-      const consoleSpy = vi.spyOn(console, 'log')
+      const validator = new SimpleValidator(form);
+      const consoleSpy = vi.spyOn(console, 'log');
       
-      // Setup exactly like test-demo.ts
-      validator.addField('username', { required: true, minLength: 3 })
-      validator.addField('email', { email: true })
-      validator.addField('password', { required: true, minLength: 6 })
+      validator.addField('username', { required: true, minLength: 3 });
+      validator.addField('email', { email: true });
+      validator.addField('password', { required: true, minLength: 6 });
       
-      // Set invalid data
-      const usernameInput = form.elements.namedItem('username')
-      const passwordInput = form.elements.namedItem('password')
+      const usernameInput = form.elements.namedItem('username');
+      const passwordInput = form.elements.namedItem('password');
       
-      usernameInput.value = 'ab' // Too short
-      passwordInput.value = '123' // Too short
+      usernameInput.value = 'ab'; 
+      passwordInput.value = '123'; 
       
-      // Simulate button click handler
       validateBtn.addEventListener('click', () => {
-        const result = validator.validate()
-        console.log(result)
-      })
+        const result = validator.validate();
+        console.log(result);
+      });
       
-      // Trigger click
-      validateBtn.click()
+      validateBtn.click();
       
-      // Should log validation result
       expect(consoleSpy).toHaveBeenCalledWith({
         valid: false,
         errors: expect.objectContaining({
           username: expect.arrayContaining(['Минимум 3 символов']),
           password: expect.arrayContaining(['Минимум 6 символов'])
         })
-      })
+      });
       
-      consoleSpy.mockRestore()
-    })
+      consoleSpy.mockRestore();
+    });
 
     it('should log success when all fields are valid', () => {
-      const validator = new SimpleValidator(form)
-      const consoleSpy = vi.spyOn(console, 'log')
+      const validator = new SimpleValidator(form);
+      const consoleSpy = vi.spyOn(console, 'log');
       
-      validator.addField('username', { required: true, minLength: 3 })
-      validator.addField('email', { email: true })
-      validator.addField('password', { required: true, minLength: 6 })
+      validator.addField('username', { required: true, minLength: 3 });
+      validator.addField('email', { email: true });
+      validator.addField('password', { required: true, minLength: 6 });
       
-      // Set valid data
-      const usernameInput = form.elements.namedItem('username')
-      const emailInput = form.elements.namedItem('email')
-      const passwordInput = form.elements.namedItem('password')
+      const usernameInput = form.elements.namedItem('username');
+      const emailInput = form.elements.namedItem('email');
+      const passwordInput = form.elements.namedItem('password');
       
-      usernameInput.value = 'JohnDoe'
-      emailInput.value = 'john@example.com'
-      passwordInput.value = 'password123'
+      usernameInput.value = 'JohnDoe';
+      emailInput.value = 'john@example.com';
+      passwordInput.value = 'password123';
       
       validateBtn.addEventListener('click', () => {
-        const result = validator.validate()
-        console.log(result)
+        const result = validator.validate();
+        console.log(result);
       })
       
       validateBtn.click()
@@ -127,11 +150,11 @@ describe('test-demo.ts Integration', () => {
       expect(consoleSpy).toHaveBeenCalledWith({
         valid: true,
         errors: {}
-      })
+      });
       
-      consoleSpy.mockRestore()
-    })
-  })
+      consoleSpy.mockRestore();
+    });
+  });
 
   describe('Reset button click', () => {
     it('should reset form when reset button is clicked', () => {

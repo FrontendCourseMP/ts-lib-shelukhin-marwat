@@ -4,17 +4,42 @@ import type {
     ValidationResult 
 } from './types/index.d.ts';
 
+/**
+ * Основной класс SimpleValidator для валидации HTML-форм
+ * Предоставляет API для добавления правил валидации и проверки полей формы
+ * @class SimpleValidator
+ * @implements {SimpleValidatorInstance}
+ */
+
 class SimpleValidator implements SimpleValidatorInstance {
     public form: HTMLFormElement;
     public fields: Map<string, FieldRules> = new Map();
+
+    /**
+     * Создает экземпляр SimpleValidator
+     * @constructor
+     * @param {HTMLFormElement} form - HTML форма для валидации
+     */
 
     constructor(form: HTMLFormElement) {
         this.form = form;
     }
 
+    /**
+     * Добавляет правила валидации для поля формы
+     * @param {string} name - Имя поля формы (атрибут name)
+     * @param {FieldRules} rules - Объект с правилами валидации
+     * @returns {void}
+     */
+
     addField(name: string, rules: FieldRules): void {
         this.fields.set(name, rules);
     }
+
+    /**
+     * Выполняет валидацию всех добавленных полей формы
+     * @returns {ValidationResult} Результат валидации с ошибками
+     */
 
     validate(): ValidationResult {
         const errors: Record<string, string[]> = {};
@@ -38,6 +63,14 @@ class SimpleValidator implements SimpleValidatorInstance {
         return { valid: isValid, errors };
     }
 
+    /**
+     * Валидирует одно поле формы по заданным правилам
+     * @private
+     * @param {HTMLInputElement} field - HTML элемент поля
+     * @param {FieldRules} rules - Правила валидации
+     * @returns {string[]} Массив сообщений об ошибках
+     */
+
     private validateField(field: HTMLInputElement, rules: FieldRules): string[] {
         const errors: string[] = [];
         const value = field.value.trim();
@@ -60,12 +93,27 @@ class SimpleValidator implements SimpleValidatorInstance {
         return errors;
     }
 
+    /**
+     * Отображает сообщения об ошибках в DOM
+     * @private
+     * @param {string} fieldName - Имя поля с ошибкой
+     * @param {string[]} errors - Массив сообщений об ошибках
+     * @returns {void}
+     */
+
     private showError(fieldName: string, errors: string[]): void {
         const errorContainer = this.form.querySelector(`[data-error-for="${fieldName}"]`);
         if (errorContainer) {
             errorContainer.textContent = errors.join(', ');
         }
     }
+    
+    /**
+     * Очищает сообщения об ошибках в DOM
+     * @private
+     * @param {string} fieldName - Имя поля для очистки
+     * @returns {void}
+     */
 
     private clearError(fieldName: string): void {
         const errorContainer = this.form.querySelector(`[data-error-for="${fieldName}"]`);

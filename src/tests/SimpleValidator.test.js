@@ -1,10 +1,20 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import SimpleValidator from '../main.js'
 
+/**
+ * Юнит-тесты для класса SimpleValidator
+ * Проверяет основные функции валидации и работу с DOM
+ * @test {SimpleValidator}
+ */
+
 describe('SimpleValidator', () => {
   let form
   let validator
-
+  
+    /**
+     * Настройка тестового окружения перед каждым тестом
+     * Создает тестовую форму и экземпляр валидатора
+     */
   beforeEach(() => {
     document.body.innerHTML = `
       <form id="test-form">
@@ -20,13 +30,25 @@ describe('SimpleValidator', () => {
     form = document.getElementById('test-form')
     validator = new SimpleValidator(form)
   })
-
+    /**
+     * Тестирование конструктора и метода addField
+     * Проверяет инициализацию и добавление правил валидации
+    */
   describe('constructor and addField', () => {
+
+    /**
+    * Проверяет создание валидатора с формой
+    * @test
+    */
     it('should create validator with form element', () => {
       expect(validator.form).toBe(form)
       expect(validator.fields.size).toBe(0)
     })
 
+    /**
+    * Проверяет добавление правил валидации для поля
+    * @test
+    */
     it('should add field rules', () => {
       validator.addField('username', { required: true, minLength: 3 })
       expect(validator.fields.get('username')).toEqual({ required: true, minLength: 3 })
@@ -39,7 +61,15 @@ describe('SimpleValidator', () => {
     })
   })
 
+  /**
+   * Тестирование валидации полей формы
+   * Проверяет различные сценарии валидации через метод validate()
+   */
   describe('validateField (private method testing via public validate)', () => {
+    /**
+     * Проверяет валидацию обязательного поля при пустом значении
+     * @test
+     */
     it('should validate required field - empty', () => {
       validator.addField('username', { required: true })
       const input = form.elements.namedItem('username')
@@ -51,6 +81,10 @@ describe('SimpleValidator', () => {
       expect(result.errors.username).toContain('Это поле обязательно')
     })
 
+    /**
+     * Проверяет валидацию обязательного поля при заполненном значении
+     * @test
+     */
     it('should validate required field - filled', () => {
       validator.addField('username', { required: true })
       const input = form.elements.namedItem('username')
@@ -62,6 +96,10 @@ describe('SimpleValidator', () => {
       expect(result.errors).toEqual({})
     })
 
+    /**
+     * Проверяет валидацию минимальной длины при слишком коротком значении
+     * @test
+     */
     it('should validate minLength - too short', () => {
       validator.addField('username', { minLength: 5 })
       const input = form.elements.namedItem('username')
@@ -138,7 +176,15 @@ describe('SimpleValidator', () => {
     })
   })
 
+  /**
+   * Тестирование отображения ошибок в DOM
+   * Проверяет методы showError и clearError
+   */
   describe('showError and clearError (DOM interactions)', () => {
+    /**
+     * Проверяет отображение ошибок в DOM при неудачной валидации
+     * @test
+     */
     it('should display error in DOM when validation fails', () => {
       validator.addField('username', { required: true })
       const input = form.elements.namedItem('username')
@@ -149,7 +195,11 @@ describe('SimpleValidator', () => {
       const errorContainer = form.querySelector('[data-error-for="username"]')
       expect(errorContainer?.textContent).toBe('Это поле обязательно')
     })
-
+    
+    /**
+     * Проверяет очистку ошибок в DOM при успешной валидации
+     * @test
+     */
     it('should display multiple errors joined by comma', () => {
       validator.addField('username', { required: true, minLength: 5 })
       const input = form.elements.namedItem('username')
